@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Land | Minimalist Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --accent: #C5A059; /* Champagne Gold */
+            --snake-body: #ffffff;
+            --panel: #252525;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .stats {
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        #game-container {
+            position: relative;
+            border: 2px solid var(--panel);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            display: block;
+            background-color: #111;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 26, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="game-header">
+        <h1>Snake Land</h1>
+        <div class="stats">SCORE: <span id="score">0</span> | BEST: <span id="highscore">0</span></div>
+    </div>
+
+    <div id="game-container">
+        <div id="overlay" class="overlay">
+            <h2 id="status-text" style="letter-spacing: 3px; font-weight: 300;">READY?</h2>
+            <button class="btn" onclick="startGame()">Start Mission</button>
+            <p style="font-size: 9px; margin-top: 20px; color: #555;">USE ARROW KEYS OR WASD</p>
+        </div>
+        
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreElement = document.getElementById("score");
+        const highscoreElement = document.getElementById("highscore");
+        const overlay = document.getElementById("overlay");
+        const statusText = document.getElementById("status-text");
+
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+
+        let score = 0;
+        let highscore = localStorage.getItem("snakeHighscore") || 0;
+        highscoreElement.innerText = highscore;
+
+        let dx = 0;
+        let dy = 0;
+        let snake = [{x: 10, y: 10}];
+        let food = {x: 5, y: 5};
+        let gameSpeed = 100;
+        let gameLoop;
+
+        // Controls
+        window.addEventListener("keydown", changeDirection);
+
+        function changeDirection(event) {
+            const LEFT_KEY = 37; const RIGHT_KEY = 39; const UP_KEY = 38; const DOWN_KEY = 40;
+            const A_KEY = 65; const D_KEY = 68; const W_KEY = 87; const S_KEY = 83;
+
+            const keyPressed = event.keyCode;
+            const goingUp = dy === -1;
+            const goingDown = dy === 1;
+            const goingRight = dx === 1;
+            const goingLeft = dx === -1;
+
+            if ((keyPressed === LEFT_KEY || keyPressed === A_KEY) && !goingRight) { dx = -1; dy = 0; }
+            if ((keyPressed === UP_KEY || keyPressed === W_KEY) && !goingDown) { dx = 0; dy = -1; }
+            if ((keyPressed === RIGHT_KEY || keyPressed === D_KEY) && !goingLeft) { dx = 1; dy = 0; }
+            if ((keyPressed === DOWN_KEY || keyPressed === S_KEY) && !goingUp) { dx = 0; dy = 1; }
+        }
+
+        function startGame() {
+            // Reset Game
+            score = 0;
+            scoreElement.innerText = score;
+            snake = [{x: 10, y: 10}];
+            dx = 1; dy = 0;
+            overlay.classList.add("hidden");
+            createFood();
+            
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(draw, gameSpeed);
+        }
+
+        function draw() {
+            moveSnake();
+            
+            if (checkGameOver()) {
+                handleGameOver();
+                return;
+            }
+
+            // Clear Background
+            ctx.fillStyle = "#111";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Food (Champagne Gold)
+            ctx.fillStyle = "#C5A059";
+            ctx.beginPath();
+            ctx.arc((food.x * gridSize) + gridSize/2, (food.y * gridSize) + gridSize/2, gridSize/3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw Snake
+            snake.forEach((part, index) => {
+                ctx.fillStyle = index === 0 ? "#C5A059" : "#ffffff";
+                ctx.strokeStyle = "#111";
+                ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+            });
+        }
+
+        function moveSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                scoreElement.innerText = score;
+                createFood();
+            } else {
+                snake.pop();
+            }
+        }
+
+        function createFood() {
+            food.x = Math.floor(Math.random() * tileCount);
+            food.y = Math.floor(Math.random() * tileCount);
+            // Check if food spawned on snake
+            snake.forEach(part => {
+                if (part.x === food.x && part.y === food.y) createFood();
+            });
+        }
+
+        function checkGameOver() {
+            const head = snake[0];
+            // Wall collision
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
+            // Body collision
+            for (let i = 1; i < snake.length; i++) {
+                if (snake[i].x === head.x && snake[i].y === head.y) return true;
+            }
+            return false;
+        }
+
+        function handleGameOver() {
+            clearInterval(gameLoop);
+            if (score > highscore) {
+                highscore = score;
+                localStorage.setItem("snakeHighscore", highscore);
+                highscoreElement.innerText = highscore;
+            }
+            statusText.innerText = "GAME OVER";
+            overlay.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
