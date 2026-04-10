@@ -1,237 +1,900 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Land | Minimalist Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #1a1a1a;
-            --accent: #C5A059; /* Champagne Gold */
-            --snake-body: #ffffff;
-            --panel: #252525;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+  <title>Fake Contact Generator | Premium Profile Generator</title>
 
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+  <link rel="icon" type="image/png" href="Logo.png" />
+  <link rel="apple-touch-icon" href="Logo.png" />
 
-        .game-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+  <meta name="description" content="Generate fictional contact profiles with phone numbers, emails, demo addresses, avatars, CSV export, and map links for testing and demos." />
+  <meta name="keywords" content="fake data generator, profile generator, phone number generator, email generator, csv export, demo contacts" />
+  <meta name="author" content="OpenAI" />
+  <meta name="theme-color" content="#2563eb" />
 
-        h1 {
-            font-size: 24px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
+  <meta property="og:title" content="Fake Contact Generator" />
+  <meta property="og:description" content="Generate fictional contact profiles with avatars, CSV export, and map links." />
+  <meta property="og:image" content="Logo.png" />
+  <meta property="og:type" content="website" />
 
-        .stats {
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: #888;
-        }
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fake Contact Generator" />
+  <meta name="twitter:description" content="Premium fictional profile generator with avatars, CSV export, and map links." />
+  <meta name="twitter:image" content="Logo.png" />
 
-        #game-container {
-            position: relative;
-            border: 2px solid var(--panel);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #1e293b;
+      --bg3: #312e81;
+      --glass: rgba(255, 255, 255, 0.12);
+      --glass-strong: rgba(255, 255, 255, 0.18);
+      --border: rgba(255, 255, 255, 0.18);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --primary: #60a5fa;
+      --primary-2: #a78bfa;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+      --chip: rgba(255,255,255,0.08);
+    }
 
-        canvas {
-            display: block;
-            background-color: #111;
-        }
+    body.light {
+      --bg1: #dbeafe;
+      --bg2: #e0e7ff;
+      --bg3: #f5d0fe;
+      --glass: rgba(255, 255, 255, 0.55);
+      --glass-strong: rgba(255, 255, 255, 0.72);
+      --border: rgba(255, 255, 255, 0.55);
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #2563eb;
+      --primary-2: #7c3aed;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.14);
+      --chip: rgba(255,255,255,0.45);
+    }
 
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(26, 26, 26, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .btn {
-            padding: 12px 30px;
-            border: 1px solid var(--accent);
-            background: transparent;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(96,165,250,0.35), transparent 30%),
+        radial-gradient(circle at 85% 20%, rgba(167,139,250,0.28), transparent 28%),
+        radial-gradient(circle at 50% 90%, rgba(56,189,248,0.18), transparent 28%),
+        linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      background-size: 180% 180%;
+      animation: bgMove 16s ease infinite;
+      padding: 24px;
+      overflow-x: hidden;
+    }
 
-        .btn:hover {
-            background: var(--accent);
-            color: var(--bg);
-        }
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 320px;
+      height: 320px;
+      border-radius: 999px;
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      animation: floatBlob 15s ease-in-out infinite;
+    }
 
-        .hidden { display: none !important; }
-    </style>
+    body::before {
+      top: -40px;
+      left: -80px;
+      background: rgba(96,165,250,0.6);
+    }
+
+    body::after {
+      right: -80px;
+      bottom: -40px;
+      background: rgba(167,139,250,0.5);
+      animation-duration: 19s;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes floatBlob {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(20px,-24px) scale(1.08); }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .header {
+      border-radius: 28px;
+      padding: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+      animation: rise .45s ease;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .title {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      border-radius: 28px;
+      padding: 20px;
+      animation: rise .55s ease;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    input, select, button {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--glass-strong);
+      color: var(--text);
+      padding: 13px 14px;
+      font-size: 14px;
+      outline: none;
+      backdrop-filter: blur(12px);
+    }
+
+    input::placeholder {
+      color: var(--muted);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      width: auto;
+      min-width: 120px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: white;
+      border: none;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr .8fr .8fr;
+      gap: 14px;
+      margin-top: 20px;
+      align-items: end;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .meta-title {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .meta-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border-radius: 24px;
+      padding: 16px;
+      animation: rise .35s ease both;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      flex-shrink: 0;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      opacity: 0.9;
+    }
+
+    .avatar {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,0.35);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-fallback {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .country {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0 12px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .row {
+      padding: 9px 0;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .row strong {
+      display: inline-block;
+      min-width: 76px;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .mini {
+      width: auto;
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .empty {
+      padding: 22px;
+      border-radius: 22px;
+      color: var(--muted);
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 1080px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      body { padding: 14px; }
+      .grid, .controls, .toolbar { grid-template-columns: 1fr; }
+      .title { font-size: 24px; }
+      .brand-logo { width: 46px; height: 46px; }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="game-header">
-        <h1>Snake Land</h1>
-        <div class="stats">SCORE: <span id="score">0</span> | BEST: <span id="highscore">0</span></div>
-    </div>
-
-    <div id="game-container">
-        <div id="overlay" class="overlay">
-            <h2 id="status-text" style="letter-spacing: 3px; font-weight: 300;">READY?</h2>
-            <button class="btn" onclick="startGame()">Start Mission</button>
-            <p style="font-size: 9px; margin-top: 20px; color: #555;">USE ARROW KEYS OR WASD</p>
+  <div class="container">
+    <div class="header glass">
+      <div class="brand">
+        <img src="Logo.png" alt="Fake Contact Generator Logo" class="brand-logo" />
+        <div>
+          <h1 class="title">Fake Contact Generator</h1>
+          <div class="subtitle">Premium fictional profile generator with avatars, CSV export, search, filters, and map links.</div>
         </div>
-        
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn" id="themeToggle">Toggle Theme</button>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        const scoreElement = document.getElementById("score");
-        const highscoreElement = document.getElementById("highscore");
-        const overlay = document.getElementById("overlay");
-        const statusText = document.getElementById("status-text");
+    <div class="panel glass">
+      <div class="controls">
+        <div class="group">
+          <label for="country">Country</label>
+          <select id="country">
+            <option value="us">🇺🇸 United States</option>
+            <option value="uk">🇬🇧 United Kingdom</option>
+            <option value="india">🇮🇳 India</option>
+            <option value="canada">🇨🇦 Canada</option>
+            <option value="australia">🇦🇺 Australia</option>
+            <option value="germany">🇩🇪 Germany</option>
+            <option value="france">🇫🇷 France</option>
+            <option value="brazil">🇧🇷 Brazil</option>
+            <option value="singapore">🇸🇬 Singapore</option>
+            <option value="switzerland">🇨🇭 Switzerland</option>
+            <option value="hongkong">🇭🇰 Hong Kong</option>
+          </select>
+        </div>
 
-        const gridSize = 20;
-        const tileCount = canvas.width / gridSize;
+        <div class="group">
+          <label for="count">Profiles</label>
+          <input id="count" type="number" min="1" max="20" value="6">
+        </div>
 
-        let score = 0;
-        let highscore = localStorage.getItem("snakeHighscore") || 0;
-        highscoreElement.innerText = highscore;
+        <div class="group">
+          <label for="includeEmail">Email</label>
+          <select id="includeEmail">
+            <option value="yes">Include</option>
+            <option value="no">Hide</option>
+          </select>
+        </div>
 
-        let dx = 0;
-        let dy = 0;
-        let snake = [{x: 10, y: 10}];
-        let food = {x: 5, y: 5};
-        let gameSpeed = 100;
-        let gameLoop;
+        <div class="group">
+          <label for="includeAddress">Address</label>
+          <select id="includeAddress">
+            <option value="yes">Include demo address</option>
+            <option value="no">Hide</option>
+          </select>
+        </div>
+      </div>
 
-        // Controls
-        window.addEventListener("keydown", changeDirection);
+      <div class="button-row">
+        <button class="btn primary" id="generateBtn">Generate</button>
+        <button class="btn" id="copyAllBtn">Copy All</button>
+        <button class="btn" id="downloadCsvBtn">Download CSV</button>
+        <button class="btn" id="clearBtn">Clear</button>
+      </div>
 
-        function changeDirection(event) {
-            const LEFT_KEY = 37; const RIGHT_KEY = 39; const UP_KEY = 38; const DOWN_KEY = 40;
-            const A_KEY = 65; const D_KEY = 68; const W_KEY = 87; const S_KEY = 83;
+      <div class="toolbar">
+        <div class="group">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="text" placeholder="Search name, phone, email, address">
+        </div>
 
-            const keyPressed = event.keyCode;
-            const goingUp = dy === -1;
-            const goingDown = dy === 1;
-            const goingRight = dx === 1;
-            const goingLeft = dx === -1;
+        <div class="group">
+          <label for="filterCountry">Filter Country</label>
+          <select id="filterCountry">
+            <option value="all">All countries</option>
+          </select>
+        </div>
 
-            if ((keyPressed === LEFT_KEY || keyPressed === A_KEY) && !goingRight) { dx = -1; dy = 0; }
-            if ((keyPressed === UP_KEY || keyPressed === W_KEY) && !goingDown) { dx = 0; dy = -1; }
-            if ((keyPressed === RIGHT_KEY || keyPressed === D_KEY) && !goingLeft) { dx = 1; dy = 0; }
-            if ((keyPressed === DOWN_KEY || keyPressed === S_KEY) && !goingUp) { dx = 0; dy = 1; }
-        }
+        <div class="group">
+          <label for="filterHasEmail">Filter Email</label>
+          <select id="filterHasEmail">
+            <option value="all">All</option>
+            <option value="with-email">With email</option>
+            <option value="without-email">Without email</option>
+          </select>
+        </div>
+      </div>
 
-        function startGame() {
-            // Reset Game
-            score = 0;
-            scoreElement.innerText = score;
-            snake = [{x: 10, y: 10}];
-            dx = 1; dy = 0;
-            overlay.classList.add("hidden");
-            createFood();
-            
-            if (gameLoop) clearInterval(gameLoop);
-            gameLoop = setInterval(draw, gameSpeed);
-        }
+      <div class="meta">
+        <div>
+          <div class="meta-title">Generated profiles</div>
+          <div class="meta-note" id="resultCount">0 results</div>
+        </div>
+      </div>
 
-        function draw() {
-            moveSnake();
-            
-            if (checkGameOver()) {
-                handleGameOver();
-                return;
-            }
+      <div class="grid" id="results"></div>
+      <div class="footer-note">These are fictional demo profiles. Map links open searches for the shown demo address.</div>
+    </div>
+  </div>
 
-            // Clear Background
-            ctx.fillStyle = "#111";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+  <script>
+    const countryData = {
+      us: {
+        flag: "🇺🇸", name: "United States",
+        phone: () => `+1 (${randDigits(3)}) ${randDigits(3)}-${randDigits(4)}`,
+        emailDomains: ["gmail.com", "outlook.com", "example.com"],
+        streets: ["Maple St", "Oak Ave", "Pine Rd", "Cedar Ln"],
+        cities: ["New York", "Chicago", "Seattle", "Dallas"],
+        postal: () => randDigits(5),
+        address() { return `${randInt(100, 9999)} ${pick(this.streets)}, ${pick(this.cities)}, ${pick(["NY","CA","TX","WA"])} ${this.postal()}`; }
+      },
+      uk: {
+        flag: "🇬🇧", name: "United Kingdom",
+        phone: () => `+44 7${randDigits(3)} ${randDigits(6)}`,
+        emailDomains: ["gmail.com", "outlook.co.uk", "example.co.uk"],
+        streets: ["High Street", "King Street", "Victoria Road", "Church Lane"],
+        cities: ["London", "Manchester", "Leeds", "Bristol"],
+        postal: () => `${randLetter()}${randLetter()}${randInt(1,9)} ${randInt(1,9)}${randLetter()}${randLetter()}`,
+        address() { return `${randInt(1, 999)} ${pick(this.streets)}, ${pick(this.cities)}, ${this.postal()}`; }
+      },
+      india: {
+        flag: "🇮🇳", name: "India",
+        phone: () => `+91 ${randFrom("6789")}${randDigits(9)}`,
+        emailDomains: ["gmail.com", "outlook.com", "example.in"],
+        streets: ["MG Road", "Temple Road", "Park Avenue", "Station Road"],
+        cities: ["Mumbai", "Delhi", "Bengaluru", "Chennai"],
+        postal: () => randDigits(6),
+        address() { return `${randInt(1,999)} ${pick(this.streets)}, ${pick(this.cities)}, ${this.postal()}`; }
+      },
+      canada: {
+        flag: "🇨🇦", name: "Canada",
+        phone: () => `+1 (${randDigits(3)}) ${randDigits(3)}-${randDigits(4)}`,
+        emailDomains: ["gmail.com", "yahoo.ca", "example.ca"],
+        streets: ["Queen St", "King St", "Main St", "Elm Ave"],
+        cities: ["Toronto", "Vancouver", "Montreal", "Ottawa"],
+        postal: () => `${randLetter()}${randInt(1,9)}${randLetter()} ${randInt(1,9)}${randLetter()}${randInt(1,9)}`,
+        address() { return `${randInt(1,9999)} ${pick(this.streets)}, ${pick(this.cities)}, ${this.postal()}`; }
+      },
+      australia: {
+        flag: "🇦🇺", name: "Australia",
+        phone: () => `+61 4${randDigits(2)} ${randDigits(3)} ${randDigits(3)}`,
+        emailDomains: ["gmail.com", "outlook.com", "example.com.au"],
+        streets: ["George St", "Elizabeth St", "Bridge Rd", "Victoria Ave"],
+        cities: ["Sydney", "Melbourne", "Perth", "Brisbane"],
+        postal: () => randDigits(4),
+        address() { return `${randInt(1,999)} ${pick(this.streets)}, ${pick(this.cities)}, ${pick(["NSW","VIC","QLD","WA"])} ${this.postal()}`; }
+      },
+      germany: {
+        flag: "🇩🇪", name: "Germany",
+        phone: () => `+49 15${randDigits(2)} ${randDigits(7)}`,
+        emailDomains: ["gmail.com", "gmx.de", "example.de"],
+        streets: ["Hauptstraße", "Bahnhofstraße", "Gartenweg", "Schulstraße"],
+        cities: ["Berlin", "Munich", "Hamburg", "Frankfurt"],
+        postal: () => randDigits(5),
+        address() { return `${pick(this.streets)} ${randInt(1,200)}, ${this.postal()} ${pick(this.cities)}`; }
+      },
+      france: {
+        flag: "🇫🇷", name: "France",
+        phone: () => `+33 6 ${randDigits(2)} ${randDigits(2)} ${randDigits(2)} ${randDigits(2)}`,
+        emailDomains: ["gmail.com", "outlook.fr", "example.fr"],
+        streets: ["Rue de Paris", "Rue Nationale", "Boulevard Saint-Germain", "Rue des Fleurs"],
+        cities: ["Paris", "Lyon", "Nice", "Toulouse"],
+        postal: () => randDigits(5),
+        address() { return `${randInt(1,250)} ${pick(this.streets)}, ${this.postal()} ${pick(this.cities)}`; }
+      },
+      brazil: {
+        flag: "🇧🇷", name: "Brazil",
+        phone: () => `+55 (${randDigits(2)}) 9${randDigits(4)}-${randDigits(4)}`,
+        emailDomains: ["gmail.com", "outlook.com", "example.com.br"],
+        streets: ["Rua das Flores", "Avenida Brasil", "Rua Central", "Rua da Paz"],
+        cities: ["São Paulo", "Rio de Janeiro", "Curitiba", "Salvador"],
+        postal: () => `${randDigits(5)}-${randDigits(3)}`,
+        address() { return `${pick(this.streets)}, ${randInt(1,9999)}, ${pick(this.cities)} - ${this.postal()}`; }
+      },
+      singapore: {
+        flag: "🇸🇬", name: "Singapore",
+        phone: () => `+65 ${randFrom("89")}${randDigits(3)} ${randDigits(4)}`,
+        emailDomains: ["gmail.com", "outlook.com", "example.sg"],
+        streets: ["Orchard Road", "Serangoon Road", "Bedok North Road", "Jurong West Ave"],
+        cities: ["Singapore"],
+        postal: () => randDigits(6),
+        address() { return `${randInt(1,999)} ${pick(this.streets)}, Singapore ${this.postal()}`; }
+      },
+      switzerland: {
+        flag: "🇨🇭", name: "Switzerland",
+        phone: () => `+41 7${randDigits(2)} ${randDigits(3)} ${randDigits(2)} ${randDigits(2)}`,
+        emailDomains: ["gmail.com", "bluewin.ch", "example.ch"],
+        streets: ["Bahnhofstrasse", "Dorfstrasse", "Gartenweg", "Hauptstrasse"],
+        cities: ["Zurich", "Geneva", "Basel", "Bern"],
+        postal: () => randDigits(4),
+        address() { return `${pick(this.streets)} ${randInt(1,200)}, ${this.postal()} ${pick(this.cities)}`; }
+      },
+      hongkong: {
+        flag: "🇭🇰", name: "Hong Kong",
+        phone: () => `+852 ${randFrom("569")}${randDigits(3)} ${randDigits(4)}`,
+        emailDomains: ["gmail.com", "outlook.com", "example.hk"],
+        streets: ["Nathan Road", "Hennessy Road", "Canton Road", "Des Voeux Road"],
+        cities: ["Hong Kong", "Kowloon", "New Territories"],
+        postal: () => "",
+        address() { return `${randInt(1,999)} ${pick(this.streets)}, ${pick(this.cities)}`; }
+      }
+    };
 
-            // Draw Food (Champagne Gold)
-            ctx.fillStyle = "#C5A059";
-            ctx.beginPath();
-            ctx.arc((food.x * gridSize) + gridSize/2, (food.y * gridSize) + gridSize/2, gridSize/3, 0, Math.PI * 2);
-            ctx.fill();
+    const firstNames = [
+      "Alex","Sam","Jordan","Taylor","Chris","Avery","Jamie","Morgan","Riley","Cameron",
+      "Aarav","Priya","Rahul","Ananya","Kabir","Neha","Arjun","Meera","Ishaan","Diya"
+    ];
 
-            // Draw Snake
-            snake.forEach((part, index) => {
-                ctx.fillStyle = index === 0 ? "#C5A059" : "#ffffff";
-                ctx.strokeStyle = "#111";
-                ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
-            });
-        }
+    const lastNames = [
+      "Smith","Johnson","Brown","Miller","Davis","Wilson","Taylor","Anderson","Thomas","Moore",
+      "Sharma","Patel","Gupta","Singh","Verma","Khan","Iyer","Reddy","Das","Kapoor"
+    ];
 
-        function moveSnake() {
-            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-            snake.unshift(head);
+    const resultsEl = document.getElementById("results");
+    const countEl = document.getElementById("count");
+    const countryEl = document.getElementById("country");
+    const includeEmailEl = document.getElementById("includeEmail");
+    const includeAddressEl = document.getElementById("includeAddress");
+    const searchInput = document.getElementById("searchInput");
+    const filterCountryEl = document.getElementById("filterCountry");
+    const filterHasEmailEl = document.getElementById("filterHasEmail");
+    const resultCountEl = document.getElementById("resultCount");
 
-            if (head.x === food.x && head.y === food.y) {
-                score += 10;
-                scoreElement.innerText = score;
-                createFood();
-            } else {
-                snake.pop();
-            }
-        }
+    let profiles = [];
 
-        function createFood() {
-            food.x = Math.floor(Math.random() * tileCount);
-            food.y = Math.floor(Math.random() * tileCount);
-            // Check if food spawned on snake
-            snake.forEach(part => {
-                if (part.x === food.x && part.y === food.y) createFood();
-            });
-        }
+    document.getElementById("generateBtn").addEventListener("click", generateProfiles);
+    document.getElementById("copyAllBtn").addEventListener("click", copyAll);
+    document.getElementById("downloadCsvBtn").addEventListener("click", downloadCSV);
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      profiles = [];
+      render();
+    });
 
-        function checkGameOver() {
-            const head = snake[0];
-            // Wall collision
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
-            // Body collision
-            for (let i = 1; i < snake.length; i++) {
-                if (snake[i].x === head.x && snake[i].y === head.y) return true;
-            }
-            return false;
-        }
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      localStorage.setItem("premiumFakeTheme", document.body.classList.contains("light") ? "light" : "dark");
+    });
 
-        function handleGameOver() {
-            clearInterval(gameLoop);
-            if (score > highscore) {
-                highscore = score;
-                localStorage.setItem("snakeHighscore", highscore);
-                highscoreElement.innerText = highscore;
-            }
-            statusText.innerText = "GAME OVER";
-            overlay.classList.remove("hidden");
-        }
-    </script>
+    searchInput.addEventListener("input", render);
+    filterCountryEl.addEventListener("change", render);
+    filterHasEmailEl.addEventListener("change", render);
+
+    function initTheme() {
+      const saved = localStorage.getItem("premiumFakeTheme");
+      if (saved === "light") document.body.classList.add("light");
+    }
+
+    function initCountryFilter() {
+      const options = Object.entries(countryData)
+        .map(([key, c]) => `<option value="${key}">${c.flag} ${c.name}</option>`)
+        .join("");
+      filterCountryEl.innerHTML += options;
+    }
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function randDigits(length) {
+      return Array.from({length}, () => randInt(0,9)).join("");
+    }
+
+    function randLetter() {
+      return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[randInt(0,25)];
+    }
+
+    function randFrom(chars) {
+      return chars[randInt(0, chars.length - 1)];
+    }
+
+    function pick(arr) {
+      return arr[randInt(0, arr.length - 1)];
+    }
+
+    function makeName() {
+      return `${pick(firstNames)} ${pick(lastNames)}`;
+    }
+
+    function initials(name) {
+      return name.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
+    }
+
+    function makeEmail(name, key) {
+      const domain = pick(countryData[key].emailDomains);
+      const parts = name.toLowerCase().replace(/[^a-z ]/g, "").trim().split(/\s+/);
+      const first = parts[0] || "user";
+      const last = parts[1] || "demo";
+      const styles = [
+        `${first}.${last}`,
+        `${first}${last}${randInt(1,999)}`,
+        `${first}_${last}`,
+        `${first.charAt(0)}${last}${randInt(10,99)}`
+      ];
+      return `${pick(styles)}@${domain}`;
+    }
+
+    function avatarUrl(name, countryKey) {
+      const seed = encodeURIComponent(`${countryKey}-${name}`);
+      return `https://api.dicebear.com/8.x/personas/svg?seed=${seed}`;
+    }
+
+    function generateProfiles() {
+      const key = countryEl.value;
+      const count = Math.max(1, Math.min(20, Number(countEl.value) || 1));
+      const includeEmail = includeEmailEl.value === "yes";
+      const includeAddress = includeAddressEl.value === "yes";
+      const c = countryData[key];
+
+      profiles = Array.from({ length: count }, () => {
+        const name = makeName();
+        const address = includeAddress ? c.address() : "";
+        return {
+          name,
+          initials: initials(name),
+          avatar: avatarUrl(name, key),
+          countryKey: key,
+          countryFlag: c.flag,
+          countryName: c.name,
+          phone: c.phone(),
+          email: includeEmail ? makeEmail(name, key) : "",
+          address,
+          mapUrl: address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}` : ""
+        };
+      });
+
+      render();
+    }
+
+    function filteredProfiles() {
+      const q = searchInput.value.trim().toLowerCase();
+      const countryFilter = filterCountryEl.value;
+      const emailFilter = filterHasEmailEl.value;
+
+      return profiles.filter(p => {
+        const matchesQuery = !q || [
+          p.name, p.phone, p.email, p.address, p.countryName
+        ].join(" ").toLowerCase().includes(q);
+
+        const matchesCountry = countryFilter === "all" || p.countryKey === countryFilter;
+
+        const matchesEmail =
+          emailFilter === "all" ||
+          (emailFilter === "with-email" && !!p.email) ||
+          (emailFilter === "without-email" && !p.email);
+
+        return matchesQuery && matchesCountry && matchesEmail;
+      });
+    }
+
+    function render() {
+      const visible = filteredProfiles();
+      resultCountEl.textContent = `${visible.length} result${visible.length === 1 ? "" : "s"}`;
+
+      if (!visible.length) {
+        resultsEl.innerHTML = `<div class="empty glass">No profiles match the current search or filter.</div>`;
+        return;
+      }
+
+      resultsEl.innerHTML = visible.map((p, i) => `
+        <div class="card glass" style="animation-delay:${i * 0.04}s">
+          <div class="card-top">
+            <div class="avatar-wrap">
+              <div class="avatar-ring"></div>
+              <div class="avatar">
+                <img src="${p.avatar}" alt="${p.name}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=&quot;avatar-fallback&quot;>${p.initials}</div>';">
+              </div>
+            </div>
+            <div>
+              <div class="name">${p.name}</div>
+              <div class="country">${p.countryFlag} ${p.countryName}</div>
+            </div>
+          </div>
+
+          <div class="chip-row">
+            <div class="chip">Premium card</div>
+            <div class="chip">Demo profile</div>
+          </div>
+
+          <div class="row"><strong>Phone</strong> ${p.phone}</div>
+          ${p.email ? `<div class="row"><strong>Email</strong> ${p.email}</div>` : ""}
+          ${p.address ? `<div class="row"><strong>Address</strong> ${p.address}</div>` : ""}
+
+          <div class="actions">
+            <button class="mini" onclick="copyOne(${profiles.indexOf(p)})">Copy</button>
+            ${p.email ? `<a class="mini" href="mailto:${p.email}">Email</a>` : ""}
+            ${p.address ? `<a class="mini" href="${p.mapUrl}" target="_blank" rel="noopener noreferrer">Map</a>` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function formatProfile(p) {
+      return [
+        p.name,
+        `Country: ${p.countryFlag} ${p.countryName}`,
+        `Phone: ${p.phone}`,
+        p.email ? `Email: ${p.email}` : "",
+        p.address ? `Address: ${p.address}` : "",
+        p.mapUrl ? `Map: ${p.mapUrl}` : ""
+      ].filter(Boolean).join("\n");
+    }
+
+    async function copyOne(index) {
+      const p = profiles[index];
+      if (!p) return;
+      try {
+        await navigator.clipboard.writeText(formatProfile(p));
+      } catch {
+        alert("Copy failed.");
+      }
+    }
+
+    async function copyAll() {
+      const visible = filteredProfiles();
+      if (!visible.length) {
+        alert("Nothing to copy.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(
+          visible.map(formatProfile).join("\n\n--------------------\n\n")
+        );
+      } catch {
+        alert("Copy failed.");
+      }
+    }
+
+    function escCSV(v) {
+      return `"${String(v ?? "").replace(/"/g, '""')}"`;
+    }
+
+    function downloadCSV() {
+      const visible = filteredProfiles();
+      if (!visible.length) {
+        alert("Nothing to download.");
+        return;
+      }
+
+      const rows = [
+        ["Name","Country","Phone","Email","Address","Map URL"],
+        ...visible.map(p => [p.name, `${p.countryFlag} ${p.countryName}`, p.phone, p.email, p.address, p.mapUrl])
+      ];
+
+      const csv = rows.map(r => r.map(escCSV).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `premium-fake-contacts-${new Date().toISOString().slice(0,19).replace(/[:T]/g,"-")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    initTheme();
+    initCountryFilter();
+    generateProfiles();
+
+    window.copyOne = copyOne;
+  </script>
 </body>
 </html>
